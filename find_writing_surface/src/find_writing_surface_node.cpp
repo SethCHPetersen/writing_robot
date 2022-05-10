@@ -55,12 +55,12 @@ cv::Mat frame_to_mat(const rs2::frame& f)
 
 rs2::pipeline_profile profile;
 
-enum class direction
+enum class direction //class needed for camera calibration, provided by Intel
 {
     to_depth,
     to_color
 };
-double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0)
+double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0) // class used to compute angles in order to pick out the sqauares in an image
 {
     double dx1 = pt1.x - pt0.x;
     double dy1 = pt1.y - pt0.y;
@@ -69,7 +69,7 @@ double angle(cv::Point pt1, cv::Point pt2, cv::Point pt0)
     return (dx1 * dx2 + dy1 * dy2) / sqrt((dx1 * dx1 + dy1 * dy1) * (dx2 * dx2 + dy2 * dy2) + 1e-10);
 }
 
-rs2::frameset getAlignedFramset()
+rs2::frameset getAlignedFramset() // color images and positional data are sent sepretely from the realsense camera and need to be aligned in order to be used
 {
     rs2::pipeline pipe;
     rs2::config cfg;
@@ -117,14 +117,14 @@ rs2::frameset getAlignedFramset()
     // cout << heightDepth << endl;
     return frameset;
 }
-rs2_intrinsics getCameraIntrinsics()
+rs2_intrinsics getCameraIntrinsics() // camera intrincis are needed to account for the distortion produced by the camera lens and alignement of the images. 
 {
     auto stream = profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>();
     auto intr = stream.get_intrinsics(); // Calibration data
 
     return intr;
 }
-vector<vector<Point>> find_squares(Mat &image, vector<vector<Point>> &squares)
+vector<vector<Point>> find_squares(Mat &image, vector<vector<Point>> &squares) // this method is for finding a square piece of paper in an image.
 {
     // blur will enhance edge detection
     Mat blurred(image);
@@ -194,7 +194,7 @@ vector<vector<Point>> find_squares(Mat &image, vector<vector<Point>> &squares)
     cout << "done finding squares" << endl;
     return squares;
 }
-cv::Mat debugSquares(std::vector<std::vector<cv::Point>> squares, cv::Mat image)
+cv::Mat debugSquares(std::vector<std::vector<cv::Point>> squares, cv::Mat image)// this method is only to view the squares found in the workspace, just for debugging
 {
 
     for (int i = 0; i < squares.size(); i++)
@@ -228,7 +228,7 @@ cv::Mat debugSquares(std::vector<std::vector<cv::Point>> squares, cv::Mat image)
     waitKey(0);
     return image;
 }
-void savePublishedData(geometry_msgs::Vector3 paperVector)
+void savePublishedData(geometry_msgs::Vector3 paperVector) // This method is to save the point found in a text file so that you know all the points that were sent over the ROS topic.
 {
     string filename("publishedPoints.txt");
     ofstream file_out;
@@ -237,7 +237,7 @@ void savePublishedData(geometry_msgs::Vector3 paperVector)
     file_out << paperVector.x << " " << paperVector.y << " " << paperVector.z << endl;
     cout << "added point to txt file" << endl;
 }
-void PublishPointData()
+void PublishPointData() // this method is to publish the data to the ROS topic, yet to be completed.
 {
 
     return;
@@ -261,8 +261,6 @@ int main(int argc, char **argv)
         auto depth = frameset.get_depth_frame();
         auto color = frameset.get_color_frame();
         const rs2_intrinsics intrin = getCameraIntrinsics();
-        PublishAgain = false;
-        cout << intrin.fx << endl;
 
         //------------------image Setup-------------------------------------------------------------------
         auto image = frame_to_mat(color);
@@ -275,7 +273,7 @@ int main(int argc, char **argv)
         squares = find_squares(image, squares);
         debugSquares(squares, image);
         float paperPixelCord[2];
-        paperPixelCord[0] = squares.at(0).at(0).x;
+        paperPixelCord[0] = squares.at(0).at(0).x;  // the first square foud will always be the largest, so if incorrect sqaures are found as long as they are smaller then the paper, they will be excluded.
         paperPixelCord[1] = squares.at(0).at(0).y;
 
         QMath::printArray(paperPixelCord, 2, "papper pixel cords");
@@ -290,10 +288,10 @@ int main(int argc, char **argv)
 
         //------------------Quanternion Math to get transformed vector-----------------------------------------
         // float pointArray[3] = {0.148412, -0.167296, 0.955};                                                         // testing point [0.148412 -0.167296 0.955] robot cords should be .163, -.414, .06
-        float translation[3] = {-0.3634422254733067, -0.6520691528769079, 0.8675182456610416};                      // x y z
-        float quanternion[4] = {0.19093701021630496, -0.8941473997722545, 0.39227689972072916, -0.100808330785048}; // qw rx ry rz
+        float translation[3] = {-0.3634422254733067, -0.6520691528769079, 0.8675182456610416};                      //  format = {x y z}
+        float quanternion[4] = {0.19093701021630496, -0.8941473997722545, 0.39227689972072916, -0.100808330785048}; // format = {qw rx ry rz}
         vector<float> transformedPointVector;
-        transformedPointVector = QMath::transformPoint(pixelProjected, translation, quanternion);
+        transformedPointVector = QMath::transformPoint(pixelProjected, translation, quanternion); // function to transform the point from camera space to robot base cordinates.
 
         //------------------Publish Pixel cords and save to file-----------------------------------------
         geometry_msgs::Vector3 paperVector;
@@ -305,7 +303,7 @@ int main(int argc, char **argv)
         cout << paperVector.y << " transformed paper vector y " << endl;
         cout << paperVector.z << " transformed paper vector z " << endl;
 
-        // vector_pub.publish(paperVector);
+        vector_pub.publish(paperVector);
 
         savePublishedData(paperVector);
 

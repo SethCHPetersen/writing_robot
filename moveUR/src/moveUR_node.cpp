@@ -5,7 +5,7 @@
 #include <cmath>
 #include "std_msgs/String.h"
 
-#include "../../../find_writing_surface/include/quanternionMath/quanternionMath.h"
+#include "../../find_writing_surface/include/quanternionMath/quanternionMath.h"
 class Link
 {
 public:
@@ -266,28 +266,28 @@ public:
 
 int main()
 {
-    // Link link1(0, 0, .15185, 3.14159265358979 / 2); // got these from https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/
-    // Link link2(0, -.24355, 0, 0);
-    // Link link3(0, -.2132, 0, 0);
-    // Link link4(0, 0, .13102, 3.14159265358979 / 2);
-    // Link link5(0, 0, 0.08535, -3.14159265358979 / 2);
-    // Link link6(0, 0, 0.0921, 0);
+    Link link1(0, 0, .15185, 3.14159265358979 / 2); // got these from https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/
+    Link link2(0, -.24355, 0, 0);
+    Link link3(0, -.2132, 0, 0);
+    Link link4(0, 0, .13102, 3.14159265358979 / 2);
+    Link link5(0, 0, 0.08535, -3.14159265358979 / 2);
+    Link link6(0, 0, 0.0921, 0);
 
-    // vector<float> currentPos;
-    // currentPos.push_back(0);
-    // currentPos.push_back(0);
-    // currentPos.push_back(0);
-    // currentPos.push_back(0);
-    // currentPos.push_back(0);
-    // currentPos.push_back(0);
+    vector<float> currentPos;
+    currentPos.push_back(0);
+    currentPos.push_back(0);
+    currentPos.push_back(0);
+    currentPos.push_back(0);
+    currentPos.push_back(0);
+    currentPos.push_back(0);
 
-    // moveUR UR3(currentPos, link1, link2, link3, link4, link5, link6);
-    // //[0.5641759077655237, -2.3371530971922816, -4.702834431325094, -2.0123635731139125, -1.6021960417376917, -2.615519348775045]
-    // // should be .126, .189, .659, .851, -.431, .316
-    // //[-5.445096794758932, -0.5880602163127442, 0.5673182646380823, -1.6850735149779261, -1.6023038069354456, -2.615530792866842]
+    moveUR UR3(currentPos, link1, link2, link3, link4, link5, link6);
+    //[0.5641759077655237, -2.3371530971922816, -4.702834431325094, -2.0123635731139125, -1.6021960417376917, -2.615519348775045]
+    // should be .126, .189, .659, .851, -.431, .316
+    //[-5.445096794758932, -0.5880602163127442, 0.5673182646380823, -1.6850735149779261, -1.6023038069354456, -2.615530792866842]
     
-    // UR3.forwardKinematics(-5.445096794758932, -0.5880602163127442, 0.5673182646380823, -1.6850735149779261, -1.6023038069354456, -2.615530792866842);
-    // QMath::printVector(UR3.getPosition(), "UR current position");
+    UR3.forwardKinematics(-5.445096794758932, -0.5880602163127442, 0.5673182646380823, -1.6850735149779261, -1.6023038069354456, -2.615530792866842);
+    QMath::printVector(UR3.getPosition(), "UR current position");
 
     return 1;
 }

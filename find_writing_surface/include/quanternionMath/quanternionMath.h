@@ -6,11 +6,11 @@
 
 using namespace std;
 
-class QMath
+class QMath // class used to do linear algebra, specifically dealing with quaternions
 {
 
 public:
-    static void printArray(float array[], int numElements, string message)
+    static void printArray(float array[], int numElements, string message) // print an array message
     {
         cout << message << endl;
         for (int i = 0; i < numElements; i++)
@@ -20,7 +20,7 @@ public:
     }
 
 public:
-    static void printVector(vector<float> v, string message)
+    static void printVector(vector<float> v, string message) // print a vector with a message
     {
         cout << message << endl;
         for (int i = 0; i < v.size(); i++)
@@ -30,7 +30,7 @@ public:
     }
 
 public:
-    static void printMatrix(vector<vector<float>> m, string message)
+    static void printMatrix(vector<vector<float>> m, string message) // print a matrix with a message
     {
         cout << message << endl;
 
@@ -46,7 +46,7 @@ public:
     }
 
 public:
-    static vector<float> arrayToVector(float a[], int size)
+    static vector<float> arrayToVector(float a[], int size) // convert an array to a vector
     {
         vector<float> returnVector;
         // cout << " " << endl;
@@ -60,7 +60,7 @@ public:
     }
 
 public:
-    static vector<vector<float>> arrayToMatrix3d(float a[][3], int rows, int columns)
+    static vector<vector<float>> arrayToMatrix3d(float a[][3], int rows, int columns) // convert an array, 3x3, to a matrix
     {
         vector<vector<float>> returnMatrix;
         vector<float> tempVector;
@@ -78,7 +78,7 @@ public:
     }
 
 public:
-    static vector<vector<float>> arrayToMatrix4d(float a[][4], int rows, int columns)
+    static vector<vector<float>> arrayToMatrix4d(float a[][4], int rows, int columns) // convert an array, 4x4, to a matrix
     {
         vector<vector<float>> returnMatrix;
         vector<float> tempVector;
@@ -96,7 +96,7 @@ public:
     }
 
 public:
-    static vector<float> multiplyVectorByScalar(float a, vector<float> v1)
+    static vector<float> multiplyVectorByScalar(float a, vector<float> v1) // mulitply a vector by a scalar
     {
         vector<float> ReturnVector;
         for (int i = 0; i < v1.size(); i++)
@@ -108,7 +108,7 @@ public:
     }
 
 public:
-    static vector<float> addVectors(vector<float> v1, vector<float> v2)
+    static vector<float> addVectors(vector<float> v1, vector<float> v2) // add two vectors
     {
         vector<float> ReturnVector;
         for (int i = 0; i < v1.size(); i++)
@@ -120,7 +120,7 @@ public:
     }
 
 public:
-    static vector<float> subtractVectors(vector<float> v1, vector<float> v2)
+    static vector<float> subtractVectors(vector<float> v1, vector<float> v2) // subtract vector 2 from vector 1
     {
         vector<float> ReturnVector;
         for (int i = 0; i < v1.size(); i++)
@@ -132,7 +132,7 @@ public:
     }
 
 public:
-    static vector<float> crosproduct(vector<float> a, vector<float> b)
+    static vector<float> crosproduct(vector<float> a, vector<float> b) // compute the cross product of two vectors, a X b
     {
         vector<float> ReturnVector;
         ReturnVector.push_back((a[2] * b[3]) - a[3] * b[2]);
@@ -142,7 +142,7 @@ public:
     }
 
 public:
-    static vector<vector<float>> matrixmultiplyer(vector<vector<float>> m1, vector<vector<float>> m2)
+    static vector<vector<float>> matrixmultiplyer(vector<vector<float>> m1, vector<vector<float>> m2) // multiply two matrices m1 * m2
     {
         vector<vector<float>> returnMatrix;
 
@@ -177,34 +177,34 @@ public:
         return returnMatrix;
     }
 
-public:
-    static vector<float> mulitplyQuanternions(vector<float> q1, vector<float> q2)
-    {
-        vector<float> ReturnVector;
-        float dot1 = q1[1] * q2[1] + q1[2] * q2[2] + q1[3] * q2[3];
+    // public: // REMOVED FOR HAMILTON PRODUCT
+    //     static vector<float> mulitplyQuanternions(vector<float> q1, vector<float> q2) //multiply two quatermions q1 * q2
+    //     {
+    //         vector<float> ReturnVector;
+    //         float dot1 = q1[1] * q2[1] + q1[2] * q2[2] + q1[3] * q2[3];
 
-        ReturnVector.push_back(q1[0] * q2[0] - dot1);
-        vector<float> v1;
-        vector<float> v2;
-        v1.push_back(q1[1]);
-        v1.push_back(q1[2]);
-        v1.push_back(q1[3]);
-        v2.push_back(q2[1]);
-        v2.push_back(q2[2]);
-        v2.push_back(q2[3]);
-        vector<float> m1 = multiplyVectorByScalar(q1[0], v1);
-        vector<float> m2 = multiplyVectorByScalar(q2[0], v2);
-        vector<float> product = addVectors(m1, m2);
-        vector<float> crossprod = crosproduct(v1, v2);
-        vector<float> product2 = addVectors(product, crossprod);
-        ReturnVector.push_back(product2[0]);
-        ReturnVector.push_back(product2[1]);
-        ReturnVector.push_back(product2[2]);
-        return ReturnVector;
-    }
+    //         ReturnVector.push_back(q1[0] * q2[0] - dot1);
+    //         vector<float> v1;
+    //         vector<float> v2;
+    //         v1.push_back(q1[1]);
+    //         v1.push_back(q1[2]);
+    //         v1.push_back(q1[3]);
+    //         v2.push_back(q2[1]);
+    //         v2.push_back(q2[2]);
+    //         v2.push_back(q2[3]);
+    //         vector<float> m1 = multiplyVectorByScalar(q1[0], v1);
+    //         vector<float> m2 = multiplyVectorByScalar(q2[0], v2);
+    //         vector<float> product = addVectors(m1, m2);
+    //         vector<float> crossprod = crosproduct(v1, v2);
+    //         vector<float> product2 = addVectors(product, crossprod);
+    //         ReturnVector.push_back(product2[0]);
+    //         ReturnVector.push_back(product2[1]);
+    //         ReturnVector.push_back(product2[2]);
+    //         return ReturnVector;
+    //     }
 
 public:
-    static vector<float> hamiltonProduct(vector<float> v1, vector<float> v2)
+    static vector<float> hamiltonProduct(vector<float> v1, vector<float> v2) // compute the hamilton product of two quaternions, v1 * v2
     {
         vector<float> returnVecetor;
 
@@ -221,7 +221,7 @@ public:
     }
 
 public:
-    static vector<float> getUnitQuanternion(vector<float> v1)
+    static vector<float> getUnitQuanternion(vector<float> v1) // convert a quaternion to a unit quaternion
     {
         vector<float> returnVector;
 
@@ -235,7 +235,7 @@ public:
     }
 
 public:
-    static float getQuaternNorm(vector<float> quaternion)
+    static float getQuaternNorm(vector<float> quaternion) // get the normal of a quaternion
     {
         vector<float> returnVector;
         float magnitude = sqrt(pow(quaternion.at(0), 2) + pow(quaternion.at(1), 2) + pow(quaternion.at(2), 2) + pow(quaternion.at(3), 2));
@@ -243,7 +243,7 @@ public:
     }
 
 public:
-    static vector<float> getQuaternionConjugate(vector<float> quaternion)
+    static vector<float> getQuaternionConjugate(vector<float> quaternion) // get the conjugate of a quaternion
     {
         vector<float> returnVector;
 
@@ -256,7 +256,7 @@ public:
     }
 
 public:
-    static vector<float> getQuaternionInverse(vector<float> quaternion)
+    static vector<float> getQuaternionInverse(vector<float> quaternion) // get the inverse of a quaternion
     {
         float norm = getQuaternNorm(quaternion);
         vector<float> returnVector;
@@ -282,7 +282,7 @@ public:
     }
 
 public:
-    static vector<float> transformPoint(float pointArray[3], float translation[3], float quanternion[4])
+    static vector<float> transformPoint(float pointArray[3], float translation[3], float quanternion[4]) // transform a point from on cord system to another using a quaternion and translation vector
     {
 
         vector<float> pointVector = arrayToVector(pointArray, 3);
@@ -299,6 +299,9 @@ public:
         // printVector(h2, "here is the hamilton product");
         h2.erase(h2.begin());
         h2 = addVectors(h2, translationVector);
+
+        //-------------- for testing purposes
+
         // printVector(h2, " here is the translated hamtilon product ");
 
         // cout << "testing Hamilton Product" << endl;
